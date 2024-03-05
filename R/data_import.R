@@ -15,6 +15,12 @@
 #'
 #' @export
 data_import <- function(folder_path = getwd()) {
+
+  if (!require("readr")) {
+    install.packages("readr")
+    library(readr)
+  }
+
   file_list <- list.files(folder_path, pattern = "\\.TXT$", full.names = FALSE)
 
   series_list <- list()
