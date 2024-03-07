@@ -28,10 +28,8 @@ data_import <- function(folder_path = getwd()) {
   for(file in file_list){
     file_content <- readLines(file, n = 1)
     sample_name <- strsplit(file_content, ", ")[[1]][1]
-
     data <- read_delim(file, delim = "\t", escape_double = FALSE, trim_ws = TRUE, skip = 3)
     data$Sample <- sample_name
-
     series_list[[file]] <- data
   }
 
