@@ -26,7 +26,7 @@ data_import <- function(folder_path = getwd()) {
   series_list <- list()
 
   for(file_name in file_list){
-    full_file_path <- file.path(path, file_name)
+    full_file_path <- file.path(folder_path, file_name)
     file_content <- readLines(full_file_path, n = 1)
     sample_name <- strsplit(file_content, ", ")[[1]][1]
     data <- read_delim(full_file_path, delim = "\t", escape_double = FALSE, trim_ws = TRUE, skip = 3)
