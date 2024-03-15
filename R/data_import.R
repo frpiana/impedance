@@ -25,12 +25,13 @@ data_import <- function(folder_path = getwd()) {
 
   series_list <- list()
 
-  for(file in file_list){
+  for(file_name in file_list){
+    full_file_path <- file.path(path, file_name)
     file_content <- readLines(file, n = 1)
     sample_name <- strsplit(file_content, ", ")[[1]][1]
-    data <- read_delim(file, delim = "\t", escape_double = FALSE, trim_ws = TRUE, skip = 3)
+    data <- read_delim(full_file_path, delim = "\t", escape_double = FALSE, trim_ws = TRUE, skip = 3)
     data$Sample <- sample_name
-    series_list[[file]] <- data
+    series_list[[file_name]] <- data
   }
 
   series <- do.call(rbind, series_list)
