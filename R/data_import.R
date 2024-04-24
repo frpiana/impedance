@@ -36,8 +36,8 @@ data_import <- function(folder_path = getwd()) {
     full_file_path <- file.path(folder_path, file_name)
 
     # Legge la prima riga del file per ottenere il nome del campione
-    file_content <- readLines(full_file_path, n = 1)
-    sample_name <- strsplit(file_content, ", ")[[1]][1]
+    file_content <- readLines(full_file_path, n = 3)
+    sample_name <- strsplit(file_content[1], ", ")[[1]][1]
 
     # Legge i dati dal file utilizzando il pacchetto readr
     data <- read_delim(full_file_path, delim = "\t", escape_double = FALSE, trim_ws = TRUE, skip = 3)
@@ -47,6 +47,18 @@ data_import <- function(folder_path = getwd()) {
 
     # Aggiunge la serie di dati alla lista
     series_list[[file_name]] <- data
+
+    # Isola la terza riga di intestazione e converte la codifica da latino1 in UTF-8
+    terza_riga <- iconv(file_content[3], from = "ISO-8859-1", to = "UTF-8")
+
+    # Estrae il valore di temperatura
+    temperature <- sub(".*Temp\\. \\[°C\\]=([0-9]\\.[0-9]{4}e[+-][0-9]{2}).*", "\\1", terza_riga)
+
+    # Controlla che il valore di temperatura sia stato effettivamente trovato
+    if (nchar(temperature) > 0) {
+      # Se il valore di temperatura viene trovato, aggiunge una colonna con tale valore
+      data$Sample <- temperature
+    }
   }
 
   # Combina tutte le serie di dati in un unico dataframe
