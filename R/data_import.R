@@ -45,20 +45,23 @@ data_import <- function(folder_path = getwd()) {
     # Aggiunge una colonna "Sample" al dataframe contenente il nome del campione
     data$Sample <- sample_name
 
-    # Aggiunge la serie di dati alla lista
-    series_list[[file_name]] <- data
-
     # Isola la terza riga di intestazione e converte la codifica da latino1 in UTF-8
     terza_riga <- iconv(file_content[3], from = "ISO-8859-1", to = "UTF-8")
-
+    print(terza_riga)
     # Estrae il valore di temperatura
-    temperature <- sub(".*Temp\\. \\[°C\\]=([0-9]\\.[0-9]{4}e[+-][0-9]{2}).*", "\\1", terza_riga)
+    temperature <- sub(".*Temp\\. \\[°C\\]=(-?[0-9]\\.[0-9]{4}e[+-][0-9]{2}).*", "\\1", terza_riga)
+
+    # Formatta e approssima la temperatura
+    temperature <- format(round(as.numeric(temperature)), digits = 2)
 
     # Controlla che il valore di temperatura sia stato effettivamente trovato
     if (nchar(temperature) > 0) {
       # Se il valore di temperatura viene trovato, aggiunge una colonna con tale valore
-      data$Sample <- temperature
+      data$Temperature <- temperature
     }
+
+    # Aggiunge la serie di dati alla lista
+    series_list[[file_name]] <- data
   }
 
   # Combina tutte le serie di dati in un unico dataframe
